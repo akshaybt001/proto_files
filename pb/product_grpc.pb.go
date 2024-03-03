@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ProductService_AddProduct_FullMethodName = "/product.ProductService/AddProduct"
-	ProductService_GetProduct_FullMethodName = "/product.ProductService/GetProduct"
+	ProductService_AddProduct_FullMethodName    = "/product.ProductService/AddProduct"
+	ProductService_GetProduct_FullMethodName    = "/product.ProductService/GetProduct"
+	ProductService_GetAllProduct_FullMethodName = "/product.ProductService/GetAllProduct"
 )
 
 // ProductServiceClient is the client API for ProductService service.
@@ -29,6 +30,7 @@ const (
 type ProductServiceClient interface {
 	AddProduct(ctx context.Context, in *AddProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
 	GetProduct(ctx context.Context, in *GetProductByID, opts ...grpc.CallOption) (*ProductResponse, error)
+	GetAllProduct(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (ProductService_GetAllProductClient, error)
 }
 
 type productServiceClient struct {
@@ -57,12 +59,45 @@ func (c *productServiceClient) GetProduct(ctx context.Context, in *GetProductByI
 	return out, nil
 }
 
+func (c *productServiceClient) GetAllProduct(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (ProductService_GetAllProductClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ProductService_ServiceDesc.Streams[0], ProductService_GetAllProduct_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &productServiceGetAllProductClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ProductService_GetAllProductClient interface {
+	Recv() (*ProductResponse, error)
+	grpc.ClientStream
+}
+
+type productServiceGetAllProductClient struct {
+	grpc.ClientStream
+}
+
+func (x *productServiceGetAllProductClient) Recv() (*ProductResponse, error) {
+	m := new(ProductResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ProductServiceServer is the server API for ProductService service.
 // All implementations must embed UnimplementedProductServiceServer
 // for forward compatibility
 type ProductServiceServer interface {
 	AddProduct(context.Context, *AddProductRequest) (*ProductResponse, error)
 	GetProduct(context.Context, *GetProductByID) (*ProductResponse, error)
+	GetAllProduct(*NoParam, ProductService_GetAllProductServer) error
 	mustEmbedUnimplementedProductServiceServer()
 }
 
@@ -75,6 +110,9 @@ func (UnimplementedProductServiceServer) AddProduct(context.Context, *AddProduct
 }
 func (UnimplementedProductServiceServer) GetProduct(context.Context, *GetProductByID) (*ProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProduct not implemented")
+}
+func (UnimplementedProductServiceServer) GetAllProduct(*NoParam, ProductService_GetAllProductServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllProduct not implemented")
 }
 func (UnimplementedProductServiceServer) mustEmbedUnimplementedProductServiceServer() {}
 
@@ -125,6 +163,27 @@ func _ProductService_GetProduct_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_GetAllProduct_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoParam)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ProductServiceServer).GetAllProduct(m, &productServiceGetAllProductServer{stream})
+}
+
+type ProductService_GetAllProductServer interface {
+	Send(*ProductResponse) error
+	grpc.ServerStream
+}
+
+type productServiceGetAllProductServer struct {
+	grpc.ServerStream
+}
+
+func (x *productServiceGetAllProductServer) Send(m *ProductResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // ProductService_ServiceDesc is the grpc.ServiceDesc for ProductService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,6 +200,12 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProductService_GetProduct_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllProduct",
+			Handler:       _ProductService_GetAllProduct_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "product.proto",
 }

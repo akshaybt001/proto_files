@@ -5,11 +5,15 @@ package product;
 option go_package = "./pb";
 
 
+
 service ProductService{
     rpc AddProduct(AddProductRequest) returns (ProductResponse);
     rpc GetProduct(GetProductByID) returns (ProductResponse);
+    rpc GetAllProduct(NoParam) returns (stream ProductResponse){}
 
 }
+
+message NoParam{};
 
 message GetProductByID{
     uint32 id = 1;
