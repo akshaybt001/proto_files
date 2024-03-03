@@ -7,7 +7,12 @@ option go_package = "./pb";
 
 service ProductService{
     rpc AddProduct(AddProductRequest) returns (ProductResponse);
+    rpc GetProduct(GetProductByID) returns (ProductResponse);
 
+}
+
+message GetProductByID{
+    uint32 id = 1;
 }
 
 message AddProductRequest{
