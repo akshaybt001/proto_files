@@ -4,12 +4,18 @@ package user;
 
 option go_package = "./pb";
 
+
+
 service UserService{
     rpc UserSignUp(UserSignUpRequest) returns (UserResponse);
     rpc UserLogin(LoginRequest) returns (UserResponse);
     rpc AdminLogin(LoginRequest) returns (UserResponse);
     rpc SupAdminLogin(LoginRequest) returns (UserResponse);
+    rpc AddAdmin(UserSignUpRequest) returns (UserResponse);
+    rpc GetAllUsers(NoParam)returns(stream UserResponse){}
+    rpc GetAllAdmins(NoParam)returns(stream UserResponse){}
 }
+message NoParam{};
 
 message UserSignUpRequest{
     string name = 1;
