@@ -7,6 +7,8 @@ option go_package = "./pb";
 service UserService{
     rpc UserSignUp(UserSignUpRequest) returns (UserResponse);
     rpc UserLogin(LoginRequest) returns (UserResponse);
+    rpc AdminLogin(LoginRequest) returns (UserResponse);
+    rpc SupAdminLogin(LoginRequest) returns (UserResponse);
 }
 
 message UserSignUpRequest{
