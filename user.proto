@@ -12,10 +12,10 @@ service UserService{
     rpc AdminLogin(LoginRequest) returns (UserResponse);
     rpc SupAdminLogin(LoginRequest) returns (UserResponse);
     rpc AddAdmin(UserSignUpRequest) returns (UserResponse);
-    rpc GetAllUsers(NoParam)returns(stream UserResponse){}
-    rpc GetAllAdmins(NoParam)returns(stream UserResponse){}
+    rpc GetAllUsers(NoPara)returns(stream UserResponse){}
+    rpc GetAllAdmins(NoPara)returns(stream UserResponse){}
 }
-message NoParam{};
+message NoPara{};
 
 message UserSignUpRequest{
     string name = 1;

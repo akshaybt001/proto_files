@@ -37,8 +37,8 @@ type UserServiceClient interface {
 	AdminLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	SupAdminLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	AddAdmin(ctx context.Context, in *UserSignUpRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	GetAllUsers(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (UserService_GetAllUsersClient, error)
-	GetAllAdmins(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (UserService_GetAllAdminsClient, error)
+	GetAllUsers(ctx context.Context, in *NoPara, opts ...grpc.CallOption) (UserService_GetAllUsersClient, error)
+	GetAllAdmins(ctx context.Context, in *NoPara, opts ...grpc.CallOption) (UserService_GetAllAdminsClient, error)
 }
 
 type userServiceClient struct {
@@ -94,7 +94,7 @@ func (c *userServiceClient) AddAdmin(ctx context.Context, in *UserSignUpRequest,
 	return out, nil
 }
 
-func (c *userServiceClient) GetAllUsers(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (UserService_GetAllUsersClient, error) {
+func (c *userServiceClient) GetAllUsers(ctx context.Context, in *NoPara, opts ...grpc.CallOption) (UserService_GetAllUsersClient, error) {
 	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[0], UserService_GetAllUsers_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
@@ -126,7 +126,7 @@ func (x *userServiceGetAllUsersClient) Recv() (*UserResponse, error) {
 	return m, nil
 }
 
-func (c *userServiceClient) GetAllAdmins(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (UserService_GetAllAdminsClient, error) {
+func (c *userServiceClient) GetAllAdmins(ctx context.Context, in *NoPara, opts ...grpc.CallOption) (UserService_GetAllAdminsClient, error) {
 	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[1], UserService_GetAllAdmins_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
@@ -167,8 +167,8 @@ type UserServiceServer interface {
 	AdminLogin(context.Context, *LoginRequest) (*UserResponse, error)
 	SupAdminLogin(context.Context, *LoginRequest) (*UserResponse, error)
 	AddAdmin(context.Context, *UserSignUpRequest) (*UserResponse, error)
-	GetAllUsers(*NoParam, UserService_GetAllUsersServer) error
-	GetAllAdmins(*NoParam, UserService_GetAllAdminsServer) error
+	GetAllUsers(*NoPara, UserService_GetAllUsersServer) error
+	GetAllAdmins(*NoPara, UserService_GetAllAdminsServer) error
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -191,10 +191,10 @@ func (UnimplementedUserServiceServer) SupAdminLogin(context.Context, *LoginReque
 func (UnimplementedUserServiceServer) AddAdmin(context.Context, *UserSignUpRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddAdmin not implemented")
 }
-func (UnimplementedUserServiceServer) GetAllUsers(*NoParam, UserService_GetAllUsersServer) error {
+func (UnimplementedUserServiceServer) GetAllUsers(*NoPara, UserService_GetAllUsersServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetAllUsers not implemented")
 }
-func (UnimplementedUserServiceServer) GetAllAdmins(*NoParam, UserService_GetAllAdminsServer) error {
+func (UnimplementedUserServiceServer) GetAllAdmins(*NoPara, UserService_GetAllAdminsServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetAllAdmins not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
@@ -301,7 +301,7 @@ func _UserService_AddAdmin_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 func _UserService_GetAllUsers_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(NoParam)
+	m := new(NoPara)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
@@ -322,7 +322,7 @@ func (x *userServiceGetAllUsersServer) Send(m *UserResponse) error {
 }
 
 func _UserService_GetAllAdmins_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(NoParam)
+	m := new(NoPara)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
