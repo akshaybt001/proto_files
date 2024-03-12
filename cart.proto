@@ -23,7 +23,7 @@ message CartCreate{
 message CartResponse{
     uint32 cartId = 1;
     uint32 userId = 2;
-    int32 quantity = 3;
+    bool isEmpty = 3;
 }
 
 message AddToCartRequst{
