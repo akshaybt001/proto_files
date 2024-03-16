@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "./pb";
+
+service OrderService{
+    rpc OrderAll(UserId) returns (OrderId);
+    rpc CancelOrder(OrderId) returns (OrderId);
+    rpc ChangeOrderStatus(ChangeStatusRequest) returns (OrderId);
+    rpc GetAllOrdersUser(UserId) returns (stream GetAllOrdersResponse){}
+    rpc GetAllOrders(NoArg) returns (stream GetAllOrdersResponse){}
+    rpc GetOrder(OrderId) returns (GetAllOrdersResponse);
+}
+
+message OrderItems{
+    uint32 id= 1;
+    uint32 orderId = 2;
+    int32 quantity = 3;
+    double price = 4;
+}
+
+message UserId{
+    uint32 userId = 1;
+}
+
+message OrderId{
+    uint32 orderId = 1;
+}
+
+message ChangeStatusRequest{
+    uint32 orderId = 1;
+    uint32 statusId = 2;
+}
+
+message GetAllOrdersResponse{
+    uint32 orderId = 1;
+    uint32 addressId = 2;
+    uint32 paymentTypeId = 3;
+    uint32 orderStatusId = 4;
+    repeated OrderItems orderItems = 5;
+}
+
+message NoArg{}
